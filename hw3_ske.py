@@ -155,7 +155,8 @@ class SVMTrainer:
 '''
 Initialize my_best_model with the best model you found.
 '''
-my_best_model = SVC(kernel='linear', C=100)
+my_best_model = SVC()
+# my_best_model = SVC(kernel='linear', C=100)
 
 def get_support_vectors_and_predictions(dataloader: DataLoader, trainer: SVMTrainer) -> dict:
     ret_val = {}
