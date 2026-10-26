@@ -38,11 +38,13 @@ class DataLoader:
         
         # TODO：complete your dataloader here!
         self.data = pd.read_csv(data_path)
-        self.data = self.create_binary_label(self.data)
 
         n_train = int(self.split * len(self.data))
         self.train_data = self.data.sample(n=n_train, random_state=self.random_state)
         self.val_data = self.data.drop(self.train_data.index.to_list())
+
+        self.train_data = self.create_binary_label(self.train_data)
+        self.val_data = self.create_binary_label(self.val_data)
 
         self.train_data = self.preprocess_data(self.train_data)
         self.val_data = self.preprocess_data(self.val_data)
@@ -128,7 +130,7 @@ class SVMTrainer:
     def __init__(self):
         pass
 
-    def train(self, X_train: np.ndarray, y_train: np.ndarray, kernel: str, **kwargs) -> SVC:
+    def my_train(self, X_train: np.ndarray, y_train: np.ndarray, kernel: str, **kwargs) -> SVC:
         '''
         Train the SVM model with the given kernel and parameters.
 
@@ -141,6 +143,23 @@ class SVMTrainer:
             SVC: Trained sklearn.svm.SVC model
         '''
         model = SVC(kernel=kernel, **kwargs)
+        model.fit(X_train, y_train)
+
+        return model
+
+    def train(self, X_train: np.ndarray, y_train: np.ndarray, kernel: str, **kwargs) -> SVC:
+        '''
+        Train the SVM model with the given kernel and parameters.
+
+        Parameters:
+            X_train: Training features
+            y_train: Training labels
+            kernel: Kernel type
+            **kwargs: Additional arguments you may use
+        Returns:
+            SVC: Trained sklearn.svm.SVC model
+        '''
+        model = SVC(kernel=kernel)
         model.fit(X_train, y_train)
 
         return model
