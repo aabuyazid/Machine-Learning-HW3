@@ -38,13 +38,11 @@ class DataLoader:
         
         # TODO：complete your dataloader here!
         self.data = pd.read_csv(data_path)
+        self.data = self.create_binary_label(self.data)
 
         n_train = int(self.split * len(self.data))
         self.train_data = self.data.sample(n=n_train, random_state=self.random_state)
         self.val_data = self.data.drop(self.train_data.index.to_list())
-
-        self.train_data = self.create_binary_label(self.train_data)
-        self.val_data = self.create_binary_label(self.val_data)
 
         self.train_data = self.preprocess_data(self.train_data)
         self.val_data = self.preprocess_data(self.val_data)
