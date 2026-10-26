@@ -53,6 +53,8 @@ class DataLoader:
         '''
         Create a binary label for the training data.
         '''
+        self.threshold = df['Chance of Admit'].median()
+
         ret_val = df.copy()
         binary_label = (df['Chance of Admit'] > self.threshold).astype(int)
         ret_val['label'] = binary_label
