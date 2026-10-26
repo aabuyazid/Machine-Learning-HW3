@@ -130,23 +130,6 @@ class SVMTrainer:
     def __init__(self):
         pass
 
-    def my_train(self, X_train: np.ndarray, y_train: np.ndarray, kernel: str, **kwargs) -> SVC:
-        '''
-        Train the SVM model with the given kernel and parameters.
-
-        Parameters:
-            X_train: Training features
-            y_train: Training labels
-            kernel: Kernel type
-            **kwargs: Additional arguments you may use
-        Returns:
-            SVC: Trained sklearn.svm.SVC model
-        '''
-        model = SVC(kernel=kernel, **kwargs)
-        model.fit(X_train, y_train)
-
-        return model
-
     def train(self, X_train: np.ndarray, y_train: np.ndarray, kernel: str, **kwargs) -> SVC:
         '''
         Train the SVM model with the given kernel and parameters.
@@ -159,7 +142,7 @@ class SVMTrainer:
         Returns:
             SVC: Trained sklearn.svm.SVC model
         '''
-        model = SVC(kernel=kernel)
+        model = SVC(kernel=kernel, **kwargs)
         model.fit(X_train, y_train)
 
         return model
