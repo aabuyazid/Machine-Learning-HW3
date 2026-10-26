@@ -141,7 +141,8 @@ class SVMTrainer:
         Returns:
             SVC: Trained sklearn.svm.SVC model
         '''
-        model = SVC(kernel=kernel, **kwargs)
+        model = SVC(kernel=kernel, **kwargs) if kernel else SVC()
+
         model.fit(X_train, y_train)
 
         return model
@@ -155,8 +156,8 @@ class SVMTrainer:
 '''
 Initialize my_best_model with the best model you found.
 '''
-my_best_model = SVC()
-# my_best_model = SVC(kernel='linear', C=100)
+# my_best_model = SVC()
+my_best_model = SVC(kernel='linear', C=100)
 
 def get_support_vectors_and_predictions(dataloader: DataLoader, trainer: SVMTrainer) -> dict:
     ret_val = {}
@@ -212,7 +213,6 @@ def grid_search(dataloader: DataLoader, trainer: SVMTrainer) -> dict:
                 best_accuracy = accuracy
                 best_hyper_params = params
 
-    print(best_accuracy)
     return best_hyper_params
 
 if __name__ == "__main__":
@@ -220,5 +220,4 @@ if __name__ == "__main__":
     trainer = SVMTrainer()
 
     sup_vec_pred_dict = get_support_vectors_and_predictions(dataloader, trainer)
-
     print(grid_search(dataloader, trainer))
