@@ -88,22 +88,20 @@ class SVMTrainer:
             SVC: Trained sklearn.svm.SVC model
         '''
         if kernel == 'linear':
-            assert 'C' in kwargs, "Linear: Why is it not here?"
-
-            C = kwargs['C']
-            model = SVC(kernel=kernel, C=C)
+            model = SVC(kernel=kernel)
 
         elif kernel == 'rbf':
-            assert all(k in kwargs for k in ['C', 'gamma']), "RBF: Why is it not here?"
+            # assert all(k in kwargs for k in ['C', 'gamma']), "RBF: Why is it not here?"
 
-            C, gamma = kwargs['C'], kwargs['gamma']
-            model = SVC(kernel=kernel, C=C, gamma=gamma)
+            # C, gamma = kwargs['C'], kwargs['gamma']
+            model = SVC(kernel=kernel)
 
         elif kernel == 'poly':
-            assert all(k in kwargs for k in ['C', 'gamma', 'coef0']), "Poly: Why is it not here?"
+            # assert all(k in kwargs for k in ['C', 'gamma', 'coef0']), "Poly: Why is it not here?"
 
-            C, gamma, coef0 = kwargs['C'], kwargs['gamma'], kwargs['coef0']
-            model = SVC(kernel=kernel, C=C, gamma=gamma, coef0=coef0)
+            # C, gamma, coef0 = kwargs['C'], kwargs['gamma'], kwargs['coef0']
+            # model = SVC(kernel=kernel, C=C, gamma=gamma, coef0=coef0)
+            model = SVC(kernel=kernel)
 
         else:
             raise ValueError(f'Unsupported kernel: {kernel}')
