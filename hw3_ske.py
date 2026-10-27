@@ -16,6 +16,8 @@ Instructions:
 
 kernels = ['linear', 'rbf', 'poly']
 
+BEST_FEATURES = ('CGPA', 'SOP')
+
 class DataLoader:
     '''
     Put your call to class methods in the __init__ method. Autograder will call your __init__ method only. 
@@ -69,7 +71,7 @@ class DataLoader:
     
     def preprocess_data(self, df: pd.DataFrame) -> pd.DataFrame:
         ret_val = df.copy()
-        ret_val = ret_val.drop(columns='Serial No.')
+        ret_val = ret_val.drop(columns=['Serial No.', 'Chance of Admit'])
 
         cols = ['GRE Score', 'TOEFL Score', 'CGPA', 'University Rating', 'SOP', 'LOR']
         for col in cols:
@@ -157,7 +159,7 @@ class SVMTrainer:
 Initialize my_best_model with the best model you found.
 '''
 # my_best_model = SVC()
-my_best_model = SVC(kernel='linear', C=100)
+my_best_model = SVC(kernel='poly', C=0.01, gamma=1, coef0=1)
 
 def get_support_vectors_and_predictions(dataloader: DataLoader, trainer: SVMTrainer) -> dict:
     ret_val = {}
@@ -187,13 +189,15 @@ def grid_search(dataloader: DataLoader, trainer: SVMTrainer) -> dict:
     train_data = dataloader.train_data
     val_data = dataloader.val_data
 
-    X_train, y_train = train_data.drop(columns='label').to_numpy(), train_data['label'].to_numpy()
-    X_val, y_val = val_data.drop(columns='label').to_numpy(), val_data['label'].to_numpy()
+    X_train = train_data[list(BEST_FEATURES)].to_numpy()
+    y_train = train_data['label'].to_numpy()
+    X_val = val_data[list(BEST_FEATURES)].to_numpy()
+    y_val = val_data['label'].to_numpy()
 
     Cs = [0.01, 0.1, 1, 10, 100]
     gammas = [0.001, 0.01, 0.1, 1, 10]
     coef0s = [0, 0.5, 1]
-    
+
     for kernel in kernels:
         if kernel == 'linear':
             param_grid = [{'C': c} for c in Cs]
@@ -203,7 +207,7 @@ def grid_search(dataloader: DataLoader, trainer: SVMTrainer) -> dict:
             param_grid = [{'C': c, 'gamma': g, 'coef0': c0} for c in Cs for g in gammas for c0 in coef0s]
         else:
             raise ValueError()
-        
+
         for params in param_grid:
             model = trainer.train(X_train, y_train, kernel, **params)
             y_pred = model.predict(X_val)
@@ -211,7 +215,7 @@ def grid_search(dataloader: DataLoader, trainer: SVMTrainer) -> dict:
 
             if best_accuracy < accuracy - 1e-12:
                 best_accuracy = accuracy
-                best_hyper_params = params
+                best_hyper_params = {'kernel': kernel, **params}
 
     return best_hyper_params
 
